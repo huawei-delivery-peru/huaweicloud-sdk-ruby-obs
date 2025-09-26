@@ -1,5 +1,5 @@
 # huaweicloud-sdk-ruby-obs
-
+# 1. Create Bucket
 ![alt text](https://github.com/huawei-delivery-peru/huaweicloud-sdk-ruby-obs/blob/main/images/1.png?raw=true)
 
 ![alt text](https://github.com/huawei-delivery-peru/huaweicloud-sdk-ruby-obs/blob/main/images/2.png?raw=true)
@@ -8,11 +8,11 @@
 
 ![alt text](https://github.com/huawei-delivery-peru/huaweicloud-sdk-ruby-obs/blob/main/images/4.png?raw=true)
 
-# OBS Client
+# 2. OBS Client
 
 A Ruby gem for interacting with S3-compatible object storage services.
 
-## Installation
+## 2.1 Installation
 
 Without GemFile:
 ```
