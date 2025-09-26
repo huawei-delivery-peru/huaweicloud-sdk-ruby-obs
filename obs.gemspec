@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
   spec.metadata["changelog_uri"] = "#{spec.homepage}/blob/main/CHANGELOG.md"
 
   # Especifica qué archivos deben incluirse en la gema
-  spec.files = Dir["lib/**/*.rb"] + ["README.md", "LICENSE.txt"]
+  spec.files = Dir["lib/**/*.rb"] + ["README.md", "LICENSE"]
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
