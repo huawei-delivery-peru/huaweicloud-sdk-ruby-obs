@@ -1,14 +1,19 @@
 # huaweicloud-sdk-ruby-obs
 # 1. Build and install manually
 ```
+# Build
 $>gem build obs.gemspec
   Successfully built RubyGem
   Name: huaweicloud-obs
   Version: 1.0.0
   File: huaweicloud-obs-1.0.0.gem
+
+# Install
 $>gem install ./huaweicloud-obs-1.0.0.gem
 Successfully installed huaweicloud-obs-1.0.0
 1 gem installed
+
+# Validation
 $>ls -l /usr/local/bundle/gems/huaweicloud-obs-1.0.0/
 total 20
 -rwxrwxrwx 1 root root 11558 Sep 26 16:38 LICENSE
