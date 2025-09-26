@@ -1,7 +1,7 @@
 require_relative 'lib/obs/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "huaweicloud-obs"
+  spec.name          = "huaweicloud-obs"  # Noté que cambiaste el nombre
   spec.version       = OBS::VERSION
   spec.authors       = ["Miguel Angel Timana Paz"]
   spec.email         = ["migueltimanapaz@gmail.com"]
@@ -17,13 +17,11 @@ Gem::Specification.new do |spec|
   spec.metadata["changelog_uri"] = "#{spec.homepage}/blob/main/CHANGELOG.md"
 
   # Especifica qué archivos deben incluirse en la gema
-  spec.files = Dir.chdir(File.expand_path('..', __FILE__)) do
-    `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
-  end
+  spec.files = Dir["lib/**/*.rb"] + ["README.md", "LICENSE.txt"]
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  # Dependencias (si las necesitas)
-  spec.add_dependency "openssl"  # Ya viene con Ruby, pero es buena práctica declararla
+  # Dependencia corregida (sin warning)
+  spec.add_dependency "openssl", "~> 2.0"
 end
