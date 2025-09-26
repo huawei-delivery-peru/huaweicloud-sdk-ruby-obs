@@ -1,7 +1,7 @@
 require_relative 'lib/obs/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "huawei-obs"
+  spec.name          = "huaweicloud-obs"
   spec.version       = OBS::VERSION
   spec.authors       = ["Miguel Angel Timana Paz"]
   spec.email         = ["migueltimanapaz@gmail.com"]

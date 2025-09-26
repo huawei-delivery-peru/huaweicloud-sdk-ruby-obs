@@ -1,4 +1,4 @@
-load 'huawei-obs'
+load 'huaweicloud-obs'
 
 access_key = ENV['ACCESS_KEY']
 secret_key = ENV['SECRET_KEY']
