@@ -8,4 +8,4 @@ Una gema Ruby para interactuar con servicios de almacenamiento de objetos compat
 Agrega esta línea a tu Gemfile:
 
 ```ruby
-gem 'obs-client', github: 'huawei-delivery-peru/huaweicloud-sdk-ruby-obs'
+gem 'huawei-obs', github: 'huawei-delivery-peru/huaweicloud-sdk-ruby-obs'
