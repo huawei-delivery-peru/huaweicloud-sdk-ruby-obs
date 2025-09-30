@@ -23,5 +23,5 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # Dependencia corregida (sin warning)
-  spec.add_dependency "openssl", "~> 2.0"
+#  spec.add_dependency "openssl", "~> 2.0"
 end
