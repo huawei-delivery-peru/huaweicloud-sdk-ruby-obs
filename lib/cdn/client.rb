@@ -56,6 +56,8 @@ module CDN
           }
         }.to_json
 
+        print(body)
+
         headers = {
           'Content-Type' => 'application/json',
           'X-Auth-Token' => @token
