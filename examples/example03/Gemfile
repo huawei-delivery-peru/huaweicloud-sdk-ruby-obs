@@ -1,0 +1,9 @@
+# Gemfile - para APLICACIÓN que USA la gema
+source 'https://rubygems.org'
+
+# Instalar tu gema desde GitHub
+gem 'httparty'
+gem 'huaweicloud-obs', '~> 1.2.0'  , github: 'huawei-delivery-peru/huaweicloud-sdk-ruby-obs'
+
+# Dependencias opcionales para el proyecto
+gem 'dotenv'  # Para variables de entorno

@@ -1,7 +1,7 @@
 # lib/huaweicloud-cdn.rb
 require 'httparty'
 require 'json'
-require_relative 'cdn/version'
+require "obs/version"
 
 module CDN
   class Error < StandardError; end
@@ -56,7 +56,7 @@ module CDN
         }
       }.to_json
 
-      puts "Request body: #{body}" # Para debugging
+#      puts "Request body: #{body}" # Para debugging
 
       headers = {
         'Content-Type' => 'application/json',
@@ -132,7 +132,7 @@ module CDN
         raise Error, "No X-Subject-Token received in authentication response"
       end
 
-      puts "Authentication successful. Token obtained." # Para debugging
+#      puts "Authentication successful. Token obtained." # Para debugging
       @token
     end
 
