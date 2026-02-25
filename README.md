@@ -35,5 +35,5 @@ gem specific_install -l https://github.com/huawei-delivery-peru/huaweicloud-sdk-
 Add this line to your Gemfile:
 
 ```ruby
-gem 'huawei-obs', github: 'huawei-delivery-peru/huaweicloud-sdk-ruby-obs'
+gem 'huaweicloud-obs', github: 'huawei-delivery-peru/huaweicloud-sdk-ruby-obs'
 ```
