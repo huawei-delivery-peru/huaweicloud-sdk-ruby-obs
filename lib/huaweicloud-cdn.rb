@@ -1,11 +1,12 @@
 # lib/huaweicloud-cdn.rb
-require 'httparty'
+require 'net/http'
 require 'json'
+require 'uri'
 require "obs/version"
 
 module CDN
   class Error < StandardError; end
-  
+
   class << self
     attr_accessor :config
   end
@@ -24,131 +25,103 @@ module CDN
   end
 
   class Client
-    include HTTParty
-    format :json
-
     attr_reader :region, :access_key, :secret_key, :token, :timeout
 
     def initialize(region: nil, access_key: nil, secret_key: nil, timeout: 60)
-      @region = region || CDN.config&.region
+      @region     = region     || CDN.config&.region
       @access_key = access_key || CDN.config&.access_key
       @secret_key = secret_key || CDN.config&.secret_key
-      @timeout = timeout || CDN.config&.timeout
-      @token = nil
+      @timeout    = timeout    || CDN.config&.timeout || 60
+      @token      = nil
 
       validate_credentials!
     end
 
-    # Crea una invalidación de cache en el CDN
-    # @param paths [Array<String>] URLs a invalidar
+    # Invalida URLs en el CDN.
+    # @param paths [String, Array<String>] URLs a invalidar
+    # @param type [String] "file" (default) para URLs exactas,
+    #                      "directory" para invalidar todo el prefijo (URL debe terminar en /)
     # @return [Hash] Respuesta de la API
-    def create_invalidation(*paths)
+    def create_invalidation(*paths, type: "file")
       authenticate unless @token
-      
-      url = "https://cdn.myhuaweicloud.com/v1.0/cdn/content/refresh-tasks"
-      
+
       body = {
         refresh_task: {
-          type: "directory",
+          type: type,
           mode: "detect_modify_refresh",
           zh_url_encode: false,
-          urls: paths
+          urls: paths.flatten
         }
       }.to_json
 
-#      puts "Request body: #{body}" # Para debugging
-
-      headers = {
-        'Content-Type' => 'application/json',
+      response = post_json(
+        "https://cdn.myhuaweicloud.com/v1.0/cdn/content/refresh-tasks",
+        body,
         'X-Auth-Token' => @token
-      }
+      )
 
-      options = {
-        headers: headers,
-        body: body,
-        timeout: @timeout
-      }
-
-      response = self.class.post(url, options)
-      
-      unless response.success?
+      unless response.is_a?(Net::HTTPSuccess)
         raise Error, "Failed to create invalidation: HTTP #{response.code} - #{response.body}"
       end
 
-      response.parsed_response
+      JSON.parse(response.body)
     end
 
-    # Alias para create_invalidation
-    def invalidate_cache(*paths)
-      create_invalidation(*paths)
-    end
-
-    # Alias para create_invalidation
-    def refresh_cache(*paths)
-      create_invalidation(*paths)
-    end
+    alias invalidate_cache create_invalidation
+    alias refresh_cache    create_invalidation
 
     private
 
-    # Autentica con Huawei Cloud IAM y obtiene el token
+    # Autentica con Huawei Cloud IAM (AK/SK) y almacena el token.
+    # El token tiene vigencia de 24 h; una nueva instancia del cliente
+    # o una llamada explícita a authenticate renovará el token.
     def authenticate
-      url = "https://iam.#{region}.myhuaweicloud.com/v3/auth/tokens"
-      
       body = {
         auth: {
           identity: {
             methods: ["hw_ak_sk"],
             hw_ak_sk: {
-              access: {
-                key: access_key
-              },
-              secret: {
-                key: secret_key
-              }
+              access: { key: @access_key },
+              secret: { key: @secret_key }
             }
           }
         }
       }.to_json
 
-      headers = {
-        'Content-Type' => 'application/json'
-      }
+      response = post_json(
+        "https://iam.#{@region}.myhuaweicloud.com/v3/auth/tokens",
+        body
+      )
 
-      options = {
-        headers: headers,
-        body: body,
-        timeout: @timeout
-      }
-
-      response = self.class.post(url, options)
-      
-      unless response.success?
+      unless response.is_a?(Net::HTTPSuccess)
         raise Error, "Authentication failed: HTTP #{response.code} - #{response.body}"
       end
 
-      @token = response.headers['x-subject-token']
-      
-      unless @token
-        raise Error, "No X-Subject-Token received in authentication response"
-      end
+      @token = response['x-subject-token']
+      raise Error, "No X-Subject-Token received in authentication response" unless @token
 
-#      puts "Authentication successful. Token obtained." # Para debugging
       @token
     end
 
-    # Valida que las credenciales estén presentes
+    def post_json(url_string, body, extra_headers = {})
+      uri  = URI.parse(url_string)
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl      = (uri.scheme == 'https')
+      http.open_timeout = @timeout
+      http.read_timeout = @timeout
+
+      request = Net::HTTP::Post.new(uri.request_uri)
+      request['Content-Type'] = 'application/json'
+      extra_headers.each { |k, v| request[k] = v }
+      request.body = body
+
+      http.request(request)
+    end
+
     def validate_credentials!
-      if @region.nil? || @region.empty?
-        raise Error, "Region is required"
-      end
-
-      if @access_key.nil? || @access_key.empty?
-        raise Error, "Access key is required"
-      end
-
-      if @secret_key.nil? || @secret_key.empty?
-        raise Error, "Secret key is required"
-      end
+      raise Error, "Region is required"     if @region.to_s.empty?
+      raise Error, "Access key is required" if @access_key.to_s.empty?
+      raise Error, "Secret key is required" if @secret_key.to_s.empty?
     end
   end
 end
