@@ -6,7 +6,6 @@ require 'openssl'
 require 'digest/md5'
 require 'time'
 require 'base64'
-require 'dotenv/load'
 
 module OBS
     class Client
