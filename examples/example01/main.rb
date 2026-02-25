@@ -1,4 +1,5 @@
 load 'huaweicloud-obs'
+require 'dotenv/load'
 
 access_key = ENV['HUAWEICLOUD_ACCESS_KEY']
 secret_key = ENV['HUAWEICLOUD_SECRET_KEY']
